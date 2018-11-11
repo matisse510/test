@@ -9,7 +9,7 @@
 
 /* ------- 游戏图片 ------- */
 var picture = new Array();
-var imgUrl = '/images/';
+var imgUrl = 'images/';
 var buildImage = function(url) {
     var img = new Image();
     img.src=url;
