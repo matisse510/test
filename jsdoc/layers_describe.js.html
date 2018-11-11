@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: layers/describe.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/mytheme.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: layers/describe.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * 游戏简介页面
+ * @param context 游戏画布(canvas对象)
+ * @property {method} Describe#drawDescribe 游戏简介页面绘制
+ * @property {method} Describe#click 游戏简介页面对象click事件的handler
+ */
+var Describe = function (context) {
+    var _self = this;
+    // 参数根据内容自定义
+    _self.ctx = context;
+    _self.width = SCREEN_WIDTH;
+    _self.height = SCREEN_HEIGHT;
+    _self.open = false; // 该界面是打开
+
+    // 需要其它参数自定义...
+
+    // 按钮尺寸(“开始”按钮与“简介”按钮的尺寸是相同的)
+    var wscale = wScale;
+    var hscale = hScale;
+    var BTNS_WIDTH = 188 * wscale;
+    var BTNS_HEIGHT = 62 * hscale;
+
+    // 按钮间垂直距离
+    var BTN_SPACE_Y = 30 * hscale;
+    var BTN_SPACE_X = 40 * wscale;
+
+    // 按钮距离底部边框距离
+    var BTNS_DIS_TO_BTM = 40 * hscale;
+
+    // 按钮定位
+    var BTN_START_OFFSET_X = (_self.width - BTN_SPACE_X) / 2 - BTNS_WIDTH;
+    var BTN_START_OFFSET_Y = _self.height - (BTNS_HEIGHT + BTN_SPACE_Y + BTNS_DIS_TO_BTM);
+    var BTN_INTRO_OFFSET_X = (_self.width + BTN_SPACE_X) / 2;
+    var BTN_INTRO_OFFSET_Y = BTN_START_OFFSET_Y;
+    var btnStart = {
+        posX: BTN_START_OFFSET_X,
+        posY: BTN_START_OFFSET_Y
+    };
+    var btnIntro = {
+        posX: BTN_INTRO_OFFSET_X,
+        posY: BTN_INTRO_OFFSET_Y
+    };
+    var background = {
+        x: 0,
+        y: 0
+    };
+    /**
+     * 功能：
+     *   1. 完成背景图绘制
+     *   2. 完成返回按钮绘制
+     *   3. 完成开始游戏按钮绘制
+     */
+    _self.drawDescribe = function () {
+        _self.ctx.clearRect(0, 0, _self.width, _self.height);
+        _self.ctx.save();
+        _self.ctx.drawImage(picture["aircraftbackground"], background.x, background.y, SCREEN_WIDTH, SCREEN_HEIGHT);
+        _self.ctx.drawImage(picture["startButton"], btnStart.posX, btnStart.posY, BTNS_WIDTH, BTNS_HEIGHT);
+        _self.ctx.drawImage(picture["returnButton"], btnIntro.posX, btnIntro.posY, BTNS_WIDTH, BTNS_HEIGHT);
+        _self.ctx.save();
+    };
+
+    /**
+     * 功能：
+     *   1. 根据e对象判断单击的位置是不是“返回按钮”和“开始游戏”按钮
+     *   2. 判断按钮并展示相应的窗口或改变相应的游戏状态
+     */
+    _self.click = function (x, y) {
+        var clickStart = x >= btnStart.posX &amp;&amp;
+            x &lt;= btnStart.posX + BTNS_WIDTH &amp;&amp;
+            y >= btnStart.posY &amp;&amp;
+            y &lt;= btnStart.posY + BTNS_HEIGHT;
+        var clickReturn = x >= btnIntro.posX &amp;&amp;
+            x &lt;= btnIntro.posX + BTNS_WIDTH &amp;&amp;
+            y >= btnIntro.posY &amp;&amp;
+            y &lt;= btnIntro.posY + BTNS_HEIGHT;
+        if (clickStart) {
+            _self.open = false;
+            window.gameState = GAME_STATE_INIT
+        } else if (clickReturn) {
+            _self.open = false;
+        } else {
+            // 点击空白交互
+        }
+
+
+    };
+
+    // 需要其它方法自定义...
+
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li class="nav-li BlindMan"><a href="global.html#BlindMan">BlindMan</a></li><li class="nav-li Bullet"><a href="global.html#Bullet">Bullet</a></li><li class="nav-li BulletArray"><a href="global.html#BulletArray">BulletArray</a></li><li class="nav-li Defender"><a href="global.html#Defender">Defender</a></li><li class="nav-li Describe"><a href="global.html#Describe">Describe</a></li><li class="nav-li Enemy"><a href="global.html#Enemy">Enemy</a></li><li class="nav-li EnemyArray"><a href="global.html#EnemyArray">EnemyArray</a></li><li class="nav-li EnemyLifeBar"><a href="global.html#EnemyLifeBar">EnemyLifeBar</a></li><li class="nav-li extend"><a href="global.html#extend">extend</a></li><li class="nav-li GameClickHandler"><a href="global.html#GameClickHandler">GameClickHandler</a></li><li class="nav-li GameMousemoveHandler"><a href="global.html#GameMousemoveHandler">GameMousemoveHandler</a></li><li class="nav-li GameStage"><a href="global.html#GameStage">GameStage</a></li><li class="nav-li GameTouchendHandler"><a href="global.html#GameTouchendHandler">GameTouchendHandler</a></li><li class="nav-li GameTouchmoveHandler"><a href="global.html#GameTouchmoveHandler">GameTouchmoveHandler</a></li><li class="nav-li imgToCanvas"><a href="global.html#imgToCanvas">imgToCanvas</a></li><li class="nav-li initData"><a href="global.html#initData">initData</a></li><li class="nav-li initWindow"><a href="global.html#initWindow">initWindow</a></li><li class="nav-li isMobile"><a href="global.html#isMobile">isMobile</a></li><li class="nav-li Menu"><a href="global.html#Menu">Menu</a></li><li class="nav-li merge"><a href="global.html#merge">merge</a></li><li class="nav-li Player"><a href="global.html#Player">Player</a></li><li class="nav-li PlayerLifeBar"><a href="global.html#PlayerLifeBar">PlayerLifeBar</a></li><li class="nav-li playGame"><a href="global.html#playGame">playGame</a></li><li class="nav-li Score"><a href="global.html#Score">Score</a></li><li class="nav-li startInterval"><a href="global.html#startInterval">startInterval</a></li><li class="nav-li stopInterval"><a href="global.html#stopInterval">stopInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Nov 10 2018 14:07:47 GMT+0800 (中国标准时间)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

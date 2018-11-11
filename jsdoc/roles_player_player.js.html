@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: roles/player/player.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/mytheme.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: roles/player/player.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * 玩家对象
+ * @property {method} Player#getX 获取玩家左上角位置的横坐标x
+ * @property {method} Player#setX 设置玩家左上角位置的横坐标x
+ * @property {method} Player#getY 获取玩家左上角位置的横坐标y
+ * @property {method} Player#setY 设置玩家左上角位置的横坐标y
+ * @property {method} Player#getCX 获取玩家中心点位置的横坐标x
+ * @property {method} Player#setCX 设置玩家中心点位置的横坐标x
+ * @property {method} Player#getCY 获取玩家中心点位置的横坐标y
+ * @property {method} Player#setCY 设置玩家中心点位置的横坐标y
+ * @property {method} Player#getWidth 获取玩家飞机宽度
+ * @property {method} Player#setWidth 设置玩家飞机宽度
+ * @property {method} Player#getHeight 获取玩家飞机高度
+ * @property {method} Player#setHeight 设置玩家飞机高度
+ * @property {method} Player#getShootTime 获取玩家子弹射击时间间隔
+ * @property {method} Player#setShootTime 设置玩家子弹射击时间间隔
+ * @property {method} Player#getLife 获取玩家生命值
+ * @property {method} Player#setLife 设置玩家生命值
+ * @property {method} Player#getLifeMax 获取玩家的最大生命值
+ * @property {method} Player#setLifeMax 设置玩家的最大生命值
+ * @property {method} Player#getAD 获取玩家飞机的攻击力
+ * @property {method} Player#setAD 设置玩家飞机的攻击力
+ * @property {method} Player#getSkin 获取玩家飞机的皮肤
+ * @property {method} Player#setSkin 设置玩家飞机的皮肤
+ * @propertyx {method} Player#setSkinAsCanvas 用Canvas类型对象设置玩家飞机的皮肤
+ * @property {method} Player#getSkinList 获取玩家飞机皮肤列表
+ * @property {method} Player#addSkin 向玩家飞机的皮肤数组添加新皮肤
+ * @property {method} Player#addSkinAsCanvas 向玩家飞机的皮肤数组添加Canvas类型的新皮肤
+ * @property {method} Player#delSkin 从玩家飞机的皮肤数组删除指定皮肤
+ * @property {method} Player#move 玩家移动方法
+ * @property {method} Player#getStatus 获取玩家状态
+ * @propertyx {method} Player#setStatus 设置玩家状态
+ */
+var Player = function() {
+    // TODO: 实现属性护盾
+    var _self = this;
+    var _x = CANVAS_WIDTH / 2 - 153 * wScale / 2;
+    var _y = CANVAS_HEIGHT;
+    var _width = 153 * wScale;
+    var _height = 101 * hScale;
+    var _shootTime = 100;
+    var _life = 300;
+    var _lifeMax =300;
+    // var _lifeTotal = 3;
+    var _AD = 100;
+    var _skinArray = [];
+    var _tmpSkin = null;
+    _self._bulletSkin = gameStagePreloadRes.PLAYER_BULLET_SKIN;
+    _self._bulletBoomedSkin = gameStagePreloadRes.PLAYER_BULLET_BOOMED_SKIN;
+    // console.timeEnd();
+    _self.bulletArray = new BulletArray();
+    var _status = 1;
+
+    var intervalId = null; // 玩家射击事件轮询
+    var tempTime = 0;
+    var bulletShootTime = 100 / FFT; // 被除数是子弹射击的间隔时间
+    // var intervalTime = 3; // 玩家子弹发射轮询的调用任务时间间隔
+
+    // 玩家子弹初始化参数
+    var bulletOpts = {
+        skin: gameStagePreloadRes.PLAYER_BULLET_SKIN, 
+        width: 40 * wScale, 
+        height: 40 * hScale, 
+        speed: 200 * FFT / 1000,
+        doMovePattern: function(bullet) {
+            bullet.setY(bullet.getY() - bulletOpts.speed)
+            // _y -= _speed;
+            var y = bullet.getY()
+            if(y &lt;= 0 || y > window.CANVAS_HEIGHT) {
+                bullet.setStatus(-2);
+            }
+        }
+    }
+
+    /**
+     * 玩家横坐标accessor
+     */
+    _self.getX = function() {
+        return _x;
+    }
+    _self.setX = function(val) {
+        _x = val;
+    }
+
+    /**
+     * 玩家纵坐标accessor
+     */
+    _self.getY = function() {
+        return _y;
+    }
+    _self.setY = function(val) {
+        _y = val;
+    }
+
+    /**
+     * 玩家中心点横坐标accessor
+     */
+    _self.getCX = function() {
+        return _x + _width / 2;
+    }
+    _self.setCX = function(val) {
+        _x = val;
+    }
+
+    /**
+     * 玩家中心点纵坐标accessor
+     */
+    _self.getCY = function() {
+        return _y + _height / 2;
+    }
+    _self.setCY = function(val) {
+        _y = val;
+    }
+
+    /**
+     * 玩家飞机宽度accessor
+     */
+    _self.getWidth = function() {
+        return _width;
+    }
+    _self.setWidth = function(val) {
+        _width = val;
+    }
+
+    /**
+     * 玩家飞机高度accessor
+     */
+    _self.getHeight = function() {
+        return _height;
+    }
+    _self.setHeight = function(val) {
+        _height = val;
+    }
+
+    /**
+     * 玩家射击子弹时间间隔accessor
+     */
+    _self.getShootTime = function() {
+        return _shootTime;
+    }
+    _self.setShootTime = function(val) {
+        _shootTime = val;
+    }
+
+    /**
+     * 玩家生命值accessor
+     */
+    _self.getLife = function() {
+        return _life;
+    }
+    _self.setLife = function(val) {
+        _life = val;
+    }
+
+    /**
+     * 玩家最大生命值accessor
+     */
+    _self.getLifeMax = function() {
+        return _lifeMax;
+    }
+    _self.setLifeMax = function(val) {
+        _lifeMax = val;
+    }
+
+    /**
+     * 玩家攻击力accessor
+     */
+    _self.getAD = function() {
+        return _AD;
+    }
+    _self.setAD = function(val) {
+        _AD = val;
+    }
+
+    /**
+     * 玩家飞机皮肤accessor
+     */
+    _self.getSkin = function() {
+        return _tmpSkin;
+    }
+
+    /**
+     * 玩家飞机皮肤列表accessor
+     */
+    _self.getSkinList = function() {
+        return _skinArray;
+    }
+
+    /**
+     * 玩家状态accessor
+     * 玩家状态应该只能从内部修改。-2表示需要被销毁；-1表示玩家已死亡，执行爆炸动画；0表示已受伤；1表示满血。
+     */
+    _self.getStatus = function() {
+        return _status;
+    }
+
+    /**
+     * 设置玩家飞机的皮肤
+     * @param {image_element | image_object | string | number} val 设置玩家飞机的皮肤，传入参数可以是带有图片地址的Image标签，或是带图片地址的Image对象，或者只是一个图片地址的字符串，或者是玩家皮肤数组的标号
+     */
+    _self.setSkin = function(val) {
+        var type = '';
+        if(typeof val === 'object') {
+            if(val.src){
+                type = val.src;
+            }else {
+                console.warn('玩家皮肤地址为空，设置皮肤失败');
+                return false;
+            }
+        }else if(typeof val === 'string') {
+            type = val;
+        }else if(typeof val === 'number'){
+            type = val;
+        }else {
+            console.warn('玩家皮肤参数类型错误，设置皮肤失败');
+            return false;
+        }
+        if(typeof type === 'number') {
+            _tmpSkin = _skinArray[type];
+        }else {
+            _tmpSkin = new Image();
+            _tmpSkin.src = type;
+        }
+    }
+
+    /**
+     * 用canvas画布设置玩家皮肤
+     * @param {canvasElement} val 玩家皮肤
+     */
+    // _self.setSkinAsCanvas = function(val) {
+    //     try {
+    //         var c = document.createElement('canvas');
+    //         var ctx = c.getContext('2d');
+    //         c.width = val.width;
+    //         c.height = val.height;
+    //         ctx.drawImage(val, 0, 0);
+    //         _tmpSkin = c;
+    //     }catch(e) {
+    //         console.warn('玩家皮肤设置失败')
+    //     }
+    // }
+
+    /**
+     * 添加新的玩家飞机皮肤
+     * @param {image_element | image_object | string} val 添加新的玩家飞机皮肤，传入参数可以是带有图片地址的Image标签，或是带图片地址的Image对象，或者只是一个图片地址的字符串
+     */
+    _self.addSkin = function(val) {
+        var type = '';
+        if(typeof val === 'object') {
+            if(val.src){
+                type = val.src;
+            }else {
+                console.warn('玩家皮肤地址为空，设置皮肤失败');
+            }
+        }else if(typeof val === 'string') {
+            type = val;
+        }else if(typeof val === 'number'){
+            type = val;
+        }else {
+            console.warn('玩家皮肤参数类型错误，设置皮肤失败');
+        }
+        var tmpImg = new Image();
+        tmpImg.src = type;
+
+        _skinArray.push(tmpImg)
+    }
+
+    /**
+     * 用canvas画布向玩家皮肤数组添加新皮肤
+     * @param {canvasElement} val 玩家皮肤
+     */
+    _self.addSkinAsCanvas = function(val) {
+        try {
+            var c = document.createElement('canvas');
+            var ctx = c.getContext('2d');
+            c.width = val.width;
+            c.height = val.height;
+            ctx.drawImage(val, 0, 0);
+            _skinArray.push(c);
+        }catch(e) {
+            console.warn('添加玩家皮肤失败')
+        }
+    }
+    
+
+    /**
+     * 删除玩家飞机的皮肤
+     * @param {image_element | image_object | string | number} val 设置玩家飞机的皮肤，传入参数可以是带有图片地址的Image标签，或是带图片地址的Image对象，或者只是一个图片地址的字符串，或者是玩家皮肤数组的标号
+     */
+    _self.delSkin = function(val) {
+        var type = '';
+        if(typeof val === 'object') {
+            if(val.src){
+                type = val.src;
+            }else {
+                console.warn('玩家皮肤地址为空，设置皮肤失败');
+                return false;
+            }
+        }else if(typeof val === 'string') {
+            type = val;
+        }else if(typeof val === 'number'){
+            type = val;
+        }else {
+            console.warn('玩家皮肤参数类型错误，设置皮肤失败');
+            return false;
+        }
+        if(typeof type === 'number') {
+            _skinArray.splice(type, 1);
+        }else {
+            for(var i = 0;i &lt; _skinArray.length;i++) {
+                if(_skinArray[i].src === type) {
+                    _skinArray.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    
+    /**
+     * 射击子弹方法
+     */
+    _self.shootBullet = function () {
+        if (_self.isBulletTime()) {
+            // var bullet = new Bullet({'skin':_self._bulletSkin});
+            var bullet = new Bullet(bulletOpts);
+            bullet.calculatePosition(_self);
+            _self.bulletArray.add(bullet);
+        }
+    };
+
+    /**
+     * 判断是否为射击时机
+     */
+    _self.isBulletTime = function () {
+        if (intervalId === null) {
+            intervalId = setInterval(_self.scaleTime, FFT); // intervalTime
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * 子弹射击轮询handler
+     */
+    _self.scaleTime = function () {
+        tempTime -= 1;
+        if (tempTime &lt;= 0) {
+            tempTime = bulletShootTime;
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+    };
+
+    /**
+     * 玩家移动事件handler
+     * @param x
+     * @param y
+     */
+    _self.move = function (x, y) {
+        // TODO: 处理飞机位置瞬移bug
+        if (x >= 0 &amp;&amp; x &lt;= CANVAS_WIDTH
+            &amp;&amp; y >= 0 &amp;&amp; y &lt;= CANVAS_HEIGHT) {
+            _self.setX(x - _self.getWidth() / 2);
+            _self.setY(y - _self.getHeight() / 2);
+        }
+    }
+
+
+    // 玩家战斗数据初始化
+    function init() {
+        // _self.setX(CANVAS_WIDTH / 2 - 153 * wScale / 2);
+        // _self.setY(CANVAS_HEIGHT);
+        // _self.setWidth(153 * wScale);
+        // _self.setHeight(101 * hScale);
+        // _self.setShootTime(100);
+        // _self.setLife(300);
+        // _self.setLifeMax(300);
+        // _self.setAD(20);
+        _self.addSkinAsCanvas(gameStagePreloadRes.PLAYER);
+        _self.setSkin(0);
+    }
+    init();
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li class="nav-li BlindMan"><a href="global.html#BlindMan">BlindMan</a></li><li class="nav-li Bullet"><a href="global.html#Bullet">Bullet</a></li><li class="nav-li BulletArray"><a href="global.html#BulletArray">BulletArray</a></li><li class="nav-li Defender"><a href="global.html#Defender">Defender</a></li><li class="nav-li Describe"><a href="global.html#Describe">Describe</a></li><li class="nav-li Enemy"><a href="global.html#Enemy">Enemy</a></li><li class="nav-li EnemyArray"><a href="global.html#EnemyArray">EnemyArray</a></li><li class="nav-li EnemyLifeBar"><a href="global.html#EnemyLifeBar">EnemyLifeBar</a></li><li class="nav-li extend"><a href="global.html#extend">extend</a></li><li class="nav-li GameClickHandler"><a href="global.html#GameClickHandler">GameClickHandler</a></li><li class="nav-li GameMousemoveHandler"><a href="global.html#GameMousemoveHandler">GameMousemoveHandler</a></li><li class="nav-li GameStage"><a href="global.html#GameStage">GameStage</a></li><li class="nav-li GameTouchendHandler"><a href="global.html#GameTouchendHandler">GameTouchendHandler</a></li><li class="nav-li GameTouchmoveHandler"><a href="global.html#GameTouchmoveHandler">GameTouchmoveHandler</a></li><li class="nav-li imgToCanvas"><a href="global.html#imgToCanvas">imgToCanvas</a></li><li class="nav-li initData"><a href="global.html#initData">initData</a></li><li class="nav-li initWindow"><a href="global.html#initWindow">initWindow</a></li><li class="nav-li isMobile"><a href="global.html#isMobile">isMobile</a></li><li class="nav-li Menu"><a href="global.html#Menu">Menu</a></li><li class="nav-li merge"><a href="global.html#merge">merge</a></li><li class="nav-li Player"><a href="global.html#Player">Player</a></li><li class="nav-li PlayerLifeBar"><a href="global.html#PlayerLifeBar">PlayerLifeBar</a></li><li class="nav-li playGame"><a href="global.html#playGame">playGame</a></li><li class="nav-li Score"><a href="global.html#Score">Score</a></li><li class="nav-li startInterval"><a href="global.html#startInterval">startInterval</a></li><li class="nav-li stopInterval"><a href="global.html#stopInterval">stopInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Nov 10 2018 14:07:47 GMT+0800 (中国标准时间)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
