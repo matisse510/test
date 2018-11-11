@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>canvas</title>
+    <script type="text/javascript" src="js/lib/jquery-1.8.1.min.js"></script>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+            outline: none;
+            border: none;
+        }
+        #canvas{
+            width: 1000px;
+            height:800px;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body> 
+    <canvas id="canvas" width="1000" height="800"></canvas>
+</body>
+</html>
+<script type="text/javascript">
+    /**
+     * rem 布局初始化
+     */
+    $('html').css('font-size', '40px');
+    /**
+     * 获取 canvas 画布
+     * 获取 canvas 绘图上下文环境
+     */
+    var canvas = $('#canvas')[0];
+    var cxt = canvas.getContext('2d');
+    
+    /**
+     * 文字的对齐 
+     * textAlign: left center right
+     */
+    /*
+    cxt.fillStyle = "blue";
+    cxt.font = "bold 40px sans-serif";
+    
+    cxt.textAlign = "left";
+    cxt.fillText("Hello Canvas", 500, 200);
+    
+    cxt.textAlign = "center";
+    cxt.fillText("Hello Canvas", 500, 300);
+    
+    cxt.textAlign = "right";
+    cxt.fillText("Hello Canvas", 500, 400);
+    
+    cxt.moveTo(500, 0);
+    cxt.lineTo(500, 600);
+    cxt.stroke();
+    */
+    
+    /*
+     * 文字对齐 
+     * textBaseLine: top, middle, bottom, alphabetic(拉丁文字), ideographic(汉字), hanging(印度文字)
+     */
+    cxt.fillStyle = "blue";
+    cxt.font = "bold 40px sans-serif";
+    
+    cxt.textBaseline = "top";
+    cxt.fillText("Hello Canvas", 100, 100);
+    
+    cxt.textBaseline = "middle";
+    cxt.fillText("Hello Canvas", 100, 300);
+    
+    cxt.textBaseline = "bottom";
+    cxt.fillText("Hello Canvas", 100, 500);
+
+    cxt.textBaseline = "alphabetic";
+    cxt.fillText("Hello Canvas", 100, 700);
+    
+    cxt.moveTo(0, 100);
+    cxt.lineTo(1000, 100);
+    cxt.moveTo(0, 300);
+    cxt.lineTo(1000, 300);
+    cxt.moveTo(0, 500);
+    cxt.lineTo(1000, 500);
+    cxt.moveTo(0, 700);
+    cxt.lineTo(1000, 700);
+
+    cxt.fillStyle = '#fac';
+    var fz = 20;
+
+    cxt.moveTo(0, 100 - fz);
+    cxt.lineTo(1000, 100 - fz);
+    cxt.moveTo(0, 300 - fz);
+    cxt.lineTo(1000, 300 - fz);
+    cxt.moveTo(0, 500 - fz);
+    cxt.lineTo(1000, 500 - fz);
+    cxt.moveTo(0, 700 - fz);
+    cxt.lineTo(1000, 700 - fz);
+
+    cxt.moveTo(0, 100 + fz);
+    cxt.lineTo(1000, 100 + fz);
+    cxt.moveTo(0, 300 + fz);
+    cxt.lineTo(1000, 300 + fz);
+    cxt.moveTo(0, 500 + fz);
+    cxt.lineTo(1000, 500 + fz);
+    cxt.moveTo(0, 700 + fz);
+    cxt.lineTo(1000, 700 + fz);
+    cxt.stroke();
+</script>

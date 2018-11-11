@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- #手机浏览器兼容性设置 -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <meta content="telephone=no" name="format-detection"/>
+
+    <!-- #手机浏览器兼容性设置 -->
+
+    <title>全民飞机大战</title>
+    <script type="text/javascript" src="js/lib/jquery-1.8.1.min.js"></script>
+    <style type="text/css">
+        *, html, body {
+            margin: 0;
+            padding: 0;
+            color:#fff;
+        }
+
+        #windowDiv {
+            display: block;
+            margin: 0 auto;
+        }
+
+        canvas {
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<!-- 图片初始化 -->
+<!-- <img id="gameStartBgImage" src="images/img_bg_level_1.jpg" hidden>
+<img id="playerImage" src="images/player.png" hidden>
+<img id="pauseImage" src="images/pause.png" hidden>
+<img id="bulletImage" src="images/bullet.png" hidden>
+<img id="startImage" src="images/startBg.jpg" hidden>
+<img id="startGameImage" src="images/IStart.png" hidden>
+<img id="rulesImage" src="images/rules.png" hidden>
+<img id="aircraftbackground" src="images/introducer.jpg" hidden/>
+<img id="startButton" src="images/startButton.png" hidden/>
+<img id="returnButton" src="images/IReturn.png" hidden/>
+<img id="goonButton" src="images/goon.png" hidden/>
+<img id="restartButton" src="images/restart.png" hidden/> -->
+
+
+<div id="windowDiv">
+    <!-- 初始化游戏画布 -->
+    <canvas id="gameCanvas">
+        您的浏览器不支持html5 的canvas，请升级或更换浏览器打开
+    </canvas>
+</div>
+<!-- 以下为自己所写的javascript文件(注意加载的先后顺序) -->
+<!-- 工具类js -->
+<script type="text/javascript" src="js/tools/device-util.js"></script>
+<script type="text/javascript" src="js/tools/helper.js"></script>
+<script type="text/javascript" src="js/tools/object-util.js"></script>
+<script type="text/javascript" src="js/tools/imgToCanvas.js"></script>
+<!-- 自定义对象及常量 -->
+<script type="text/javascript" src="js/constant.js"></script>
+<script type="text/javascript" src="js/bullet.js"></script>
+<script type="text/javascript" src="js/bulletArray.js"></script>
+<script type="text/javascript" src="js/roles/enemy/enemy-life-bar.js"></script>
+<script type="text/javascript" src="js/roles/enemy/enemy.js"></script>
+<script type="text/javascript" src="js/roles/enemy/enemyArray.js"></script>
+<script type="text/javascript" src="js/roles/enemy/blindman.js"></script>
+<script type="text/javascript" src="js/roles/enemy/defender.js"></script>
+<script type="text/javascript" src="js/roles/Player/score.js"></script>
+<script type="text/javascript" src="js/roles/player/player-life-bar.js"></script>
+<script type="text/javascript" src="js/roles/Player/player.js"></script>
+<!-- 场景js -->
+<script type="text/javascript" src="js/Layers/menu.js"></script>
+<script type="text/javascript" src="js/Layers/describe.js"></script>
+<script type="text/javascript" src="js/Layers/result.js"></script>
+<script type="text/javascript" src="js/Layers/map.js"></script>
+<script type="text/javascript" src="js/tools/preload-static-res.js"></script>
+<script type="text/javascript" src="js/Layers/my-window.js"></script>
+</body>
+</html>
