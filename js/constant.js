@@ -14,7 +14,7 @@ var buildImage = function(url) {
     var img = new Image();
     img.src=url;
     return img;
-}
+} 
 
 
 picture['gameStartBgImage'] = buildImage(imgUrl + 'img_bg_level_1.jpg');
